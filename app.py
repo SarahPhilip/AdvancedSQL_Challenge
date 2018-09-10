@@ -59,24 +59,18 @@ def tobs():
 	return jsonify(tobs)                 
 
 @app.route("/api/v1.0/<start>")
+def start_temp(start):
+    temp_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).all()
+    
+    return jsonify(temp_data)
+
+    
+
 @app.route("/api/v1.0/<start>/<end>")
-def start_end(end=None):
- 	
-    query_start = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
-
-    if not end:
-        results = session.query(*query_start).\
-            filter(Measurement.date >= start).all()
-        temp_list = list(np.ravel(results))
-        return jsonify(temp_list)
-
-    results = session.query(*query_start).\
-        filter(Measurement.date >= start).\
-        filter(Measurement.date <= end).all()
-    temp_list = list(np.ravel(results))
-    return jsonify(temp_list)
-   
-
+def range_temp(start, end):
+    temp_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    
+    return jsonify(temp_data)
 # 4. Define main behavior
 if __name__ == "__main__":
     app.run(debug=True)
