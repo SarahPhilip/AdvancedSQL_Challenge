@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 from sqlalchemy import distinct
 from flask import Flask, jsonify
+from sqlalchemy import and_
 
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 Base = automap_base()
@@ -68,7 +69,7 @@ def start_temp(start):
 
 @app.route("/api/v1.0/<start>/<end>")
 def range_temp(start, end):
-    temp_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    temp_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(and_(Measurement.date >= start, Measurement.date <= end)).all()
     
     return jsonify(temp_data)
 # 4. Define main behavior
