@@ -62,7 +62,7 @@ def tobs():
 @app.route("/api/v1.0/<start>")
 def start_temp(start):
     temp_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).all()
-    
+    temp_data=list(np.ravel(temp_data))
     return jsonify(temp_data)
 
     
@@ -70,7 +70,7 @@ def start_temp(start):
 @app.route("/api/v1.0/<start>/<end>")
 def range_temp(start, end):
     temp_data = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(and_(Measurement.date >= start, Measurement.date <= end)).all()
-    
+    temp_data = list(np.ravel(temp_data))
     return jsonify(temp_data)
 # 4. Define main behavior
 if __name__ == "__main__":
